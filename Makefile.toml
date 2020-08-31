@@ -1,0 +1,42 @@
+[env]
+DEVICE = "eth0"
+
+[tasks.compile_bpf]
+description = "Build BPF program"
+install_crate_args = ["cargo-bpf", "--git", "https://github.com/redsift/redbpf.git"]
+command = "cargo"
+args = ["bpf", "build", "limit"]
+
+[tasks.bpf]
+command = "llvm-objcopy"
+args = [
+  "--remove-section",
+  ".text", # causes generic trouble in BPF programs
+  "--rename-section",
+  "maps/counts=maps", # `tc` only recognize "maps"
+  "target/bpf/programs/limit/limit.elf",
+]
+dependencies = ["compile_bpf"]
+
+[tasks.release]
+description = "Build release"
+command = "cargo"
+args = ["build", "--release"]
+dependencies = ["bpf"]
+
+[tasks.dump]
+command = "llvm-objdump"
+args = ["-h", "target/bpf/programs/limit/limit.elf"]
+
+# https://docs.cilium.io/en/v1.8/bpf/#iproute2
+# [tasks.tc_qdisc]
+# script = "sudo tc qdisc add dev ${DEVICE} clsact"
+
+# [tasks.tc_add]
+# script = "sudo tc filter add dev ${DEVICE} ingress pref 1 handle 1 bpf da obj target/bpf/programs/limit/limit.elf sec tc_action/limit"
+
+# [tasks.tc_del]
+# script = "sudo tc filter delete dev ${DEVICE} ingress pref 1"
+
+# [tasks.tc_del_all]
+# script = "sudo tc qdisc del dev ${DEVICE} clsact"

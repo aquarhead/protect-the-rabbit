@@ -1,0 +1,22 @@
+[package]
+name = "protect-the-rabbit"
+version = "0.1.0"
+authors = ["LOU Xun <aquarhead@ela.build>"]
+edition = "2018"
+
+[dependencies]
+redbpf = { git = "https://github.com/aquarhead/redbpf.git", branch = "tc-action" }
+anyhow = "1.0"
+# BPF
+redbpf-macros = { git = "https://github.com/aquarhead/redbpf.git", branch = "tc-action", optional = true }
+redbpf-probes = { git = "https://github.com/aquarhead/redbpf.git", branch = "tc-action", optional = true }
+memoffset = { version = "0.5", optional = true }
+
+[features]
+default = []
+probes = ["redbpf-macros", "redbpf-probes", "memoffset"]
+
+[[bin]]
+name = "limit"
+path = "src/limit-consumers.rs"
+required-features = ["probes"]
