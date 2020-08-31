@@ -11,7 +11,7 @@ program!(0xFFFFFFFE, "GPL");
 #[repr(C)]
 struct Source {
   addr: u32,
-  port: u32,
+  port: u32, // should be u16, but need padding (?)
 }
 
 #[map("counts")]
