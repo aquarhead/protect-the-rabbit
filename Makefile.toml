@@ -8,7 +8,7 @@ command = "cargo"
 args = ["bpf", "build", "limit"]
 
 [tasks.bpf]
-command = "llvm-objcopy"
+command = "llvm-objcopy-10"
 args = [
   "--remove-section",
   ".text", # causes generic trouble in BPF programs
@@ -25,7 +25,7 @@ args = ["build", "--release"]
 dependencies = ["bpf"]
 
 [tasks.dump]
-command = "llvm-objdump"
+command = "llvm-objdump-10"
 args = ["-h", "target/bpf/programs/limit/limit.elf"]
 
 # https://docs.cilium.io/en/v1.8/bpf/#iproute2
