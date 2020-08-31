@@ -1,0 +1,36 @@
+name: Create Release with Assets
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  release:
+    timeout-minutes: 40
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('Cargo.lock') }}
+      - name: Install deps
+        run: sudo apt-get install -y git build-essential clang-10 llvm-10 libelf-dev linux-headers-$(uname -r) zlib1g
+      - name: Install cargo-make
+        run: |
+          wget https://github.com/sagiegurari/cargo-make/releases/download/0.32.4/cargo-make-v0.32.4-x86_64-unknown-linux-musl.zip
+          unzip cargo-make-v0.32.4-x86_64-unknown-linux-musl.zip
+          mv cargo-make-v0.32.4-x86_64-unknown-linux-musl/cargo-make ~/.cargo/bin/
+      - name: Build release
+        run: cargo make bpf
+      - name: Upload assets
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          file: target/bpf/programs/limit/limit.elf
+          asset_name: limit.elf
+          overwrite: true
