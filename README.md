@@ -1,8 +1,10 @@
 # Protect the Rabbit!
 
-L7 policies for RabbitMQ, powered by [BPF](https://ebpf.io/).
+"L7" policies for RabbitMQ, powered by [BPF](https://ebpf.io/).
 
 ## Limit consumers per connection
+
+**Caveat:** currently this will break the connection from client to RabbitMQ server. (But the client can still receive packets/messages from server).
 
 Currently hard coded to 10 consumers, try with:
 
