@@ -1,14 +1,10 @@
-[env]
-DEVICE = "eth0"
-
 [tasks.compile_bpf]
 description = "Build BPF program"
-install_crate_args = ["cargo-bpf", "--git", "https://github.com/redsift/redbpf.git"]
 command = "cargo"
 args = ["bpf", "build", "limit"]
 
 [tasks.bpf]
-command = "llvm-objcopy-10"
+command = "llvm-objcopy-11"
 args = [
   "--remove-section",
   ".text", # causes generic trouble in BPF programs
@@ -25,7 +21,7 @@ args = ["build", "--release"]
 dependencies = ["bpf"]
 
 [tasks.dump]
-command = "llvm-objdump-10"
+command = "llvm-objdump-11"
 args = ["-h", "target/bpf/programs/limit/limit.elf"]
 
 # https://docs.cilium.io/en/v1.8/bpf/#iproute2

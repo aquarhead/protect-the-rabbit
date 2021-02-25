@@ -18,11 +18,11 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('Cargo.lock') }}
       - name: Install deps
-        run: sudo apt-get install -y git build-essential clang-10 llvm-10 libelf-dev linux-headers-$(uname -r) zlib1g
+        run: sudo apt-get install -y git build-essential libclang-11-dev llvm-11-dev libelf-dev linux-headers-$(uname -r) zlib1g-dev
       - name: Install cargo-make
         run: |
-          wget https://github.com/sagiegurari/cargo-make/releases/download/0.32.4/cargo-make-v0.32.4-x86_64-unknown-linux-musl.zip
-          unzip cargo-make-v0.32.4-x86_64-unknown-linux-musl.zip
-          mv cargo-make-v0.32.4-x86_64-unknown-linux-musl/cargo-make ~/.cargo/bin/
+          wget https://github.com/sagiegurari/cargo-make/releases/download/0.32.12/cargo-make-v0.32.12-x86_64-unknown-linux-musl.zip
+          unzip cargo-make-v0.32.12-x86_64-unknown-linux-musl.zip
+          mv cargo-make-v0.32.12-x86_64-unknown-linux-musl/cargo-make ~/.cargo/bin/
       - name: Build BPF program
         run: cargo make bpf
